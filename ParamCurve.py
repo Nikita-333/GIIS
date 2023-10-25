@@ -10,42 +10,10 @@ class ParamCurveAlgorithms:
         self.action_list = []
         self.start_point = None
         self.end_point = None
-        self.points = []
-        self.is_drawing = False
 
     def add_action(self, action):
         self.action_list.append(action)
 
-    def right_click_point(self, event):
-        if self.is_drawing:
-            return
-        self.points.append((event.x, event.y))
-        self.canvas.create_oval(event.x - 2, event.y - 2, event.x + 2, event.y + 2, fill="red")
-        if len(self.points) >= 4:
-            self.is_drawing = True  # Set the state to drawing
-
-    def left_click_draw(self, event):
-        if not self.is_drawing:
-            return
-        self.draw_b_spline()
-        self.is_drawing = False  # Reset the state
-
-    def draw_b_spline(self):
-        if len(self.points) < 4:
-            print("Для кривой B-сплайн требуется минимум 4 точки.")
-            return
-
-        x = [point[0] for point in self.points]
-        y = [point[1] for point in self.points]
-
-        tck, u = interpolate.splprep([x, y], s=0)
-        unew = np.linspace(0, 1.0, 1000)
-        out = interpolate.splev(unew, tck)
-
-        for i in range(len(out[0]) - 1):
-            self.canvas.create_line(out[0][i], out[1][i], out[0][i + 1], out[1][i + 1])
-
-        self.points = []
     def draw_hermit(self, event):
         if self.start_point is None:
             self.start_point = (event.x, event.y)
@@ -128,6 +96,3 @@ class ParamCurveAlgorithms:
 
     def select_hermit_algorithm(self):
         self.selected_algorithm = self.draw_hermit
-
-    def select_spline(self):
-        self.selected_algorithm=self.draw_b_spline
