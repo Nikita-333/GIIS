@@ -3,8 +3,7 @@ import tkinter as tk
 from LineDraw import LineAlgorithms
 from Curve import CurveAlgorithms
 from ParamCurve import ParamCurveAlgorithms
-
-
+from Transformations import CubeDrawer
 # https://www.rosettacode.org/wiki/Xiaolin_Wu%27s_line_algorithm
 # https://grafika.me/node/36
 
@@ -20,6 +19,7 @@ class LineDrawerApp:
         self.line_algorithms = LineAlgorithms(self.canvas)
         self.curve_algorithms = CurveAlgorithms(self.canvas)
         self.param_algorithms = ParamCurveAlgorithms(self.canvas)
+        self.cube = CubeDrawer(self.canvas)
 
         self.create_menu()
         self.selected_algorithm = None
@@ -57,8 +57,8 @@ class LineDrawerApp:
         bezier_button = tk.Button(self.menu_frame, text="Безье", command=self.select_bezier_curve)
         bezier_button.pack(side=tk.LEFT, padx=5, pady=5, anchor="nw")
 
-        bspline_button = tk.Button(self.menu_frame, text="В-Сплайн", command=self.select_bspline)
-        bspline_button.pack(side=tk.LEFT, padx=5, pady=5, anchor="nw")
+        cube_button = tk.Button(self.menu_frame, text="Куб", command=self.select_cube_algorithm)
+        cube_button.pack(side=tk.LEFT, padx=5, pady=5, anchor="nw")
 
         clear_button = tk.Button(self.menu_frame, text="Очистка", command=self.clear_canvas)
         clear_button.pack(side=tk.LEFT, padx=5, pady=5, anchor="nw")
@@ -93,8 +93,8 @@ class LineDrawerApp:
     def select_bezier_curve(self):
         self.selected_algorithm = self.param_algorithms.draw_bezier_curve
 
-    def select_bspline(self):
-        self.selected_algorithm = self.param_algorithms.draw_b_spline
+    def select_cube_algorithm(self):
+        self.selected_algorithm = self.cube.draw_cube_algorithms
 
     def clear_canvas(self):
         self.canvas.delete("all")
@@ -130,6 +130,4 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = LineDrawerApp(root)
     app.canvas.bind("<Button-1>", app.on_canvas_click)
-    app.canvas.bind("<Button-3>", app.param_algorithms.right_click_point)
-    app.canvas.bind("<Button-1>", app.param_algorithms.left_click_draw)
     app.run()
